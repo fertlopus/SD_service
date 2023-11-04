@@ -19,10 +19,11 @@ class TextToImage:
             generate(prompt, negative_prompt=None, num_steps=50, callback=None) -> Image.Image:
                 Generates an image from a textual prompt using the Stable Diffusion model.
 
-                Args: prompt (str): The text prompt to generate the image from. negative_prompt (str | None): A text
-                prompt that describes what should not appear in the image. num_steps (int): The number of inference
-                steps to run; higher values can lead to more detailed images. callback (Callable[[int, int,
-                torch.FloatTensor], None] | None): A callback function that is called at each inference step.
+                Args: prompt (str): The text prompt to generate the image from.
+                negative_prompt (str | None): A text prompt that describes what should not appear in the image.
+                num_steps (int): The number of inference steps to run; higher values can lead to more detailed images.
+                callback (Callable[[int, int, torch.FloatTensor], None] | None): An optional callback function
+                                                                                 that is called at each inference step.
 
                 Returns:
                     Image.Image: The generated image.
@@ -51,7 +52,7 @@ class TextToImage:
         pipeline.to(device)
         self.pipeline = pipeline
 
-    def generate(self, prompt: str, *, negative_prompt: str | None = None, num_steps: int = 50,
+    def generate(self, prompt: str, *, negative_prompt: str | None = None, num_steps: int = 500,
                  callback: Callable[[int, int, torch.FloatTensor], None] | None = None) -> Image.Image:
         if not self.pipeline:
             raise RuntimeError("No pipeline provided or this version is not supported anymore.")
@@ -59,6 +60,23 @@ class TextToImage:
             prompt,
             negative_prompt = negative_prompt,
             num_inference_steps = num_steps,
-            guidance_scale = 0.9,
-            callback = callback
+            guidance_scale = 0.7,
+            callback = callback,
+            height = 800,
+            width = 600
         ).images[0]
+
+
+if __name__ == "__main__":
+    text_to_image = TextToImage()
+    text_to_image.load_model()
+
+    def callback(step: int, _timestep, _tensor):
+        print(f" ⚙ ️ Step {step}")
+
+    image = text_to_image.generate(
+        "The Milky Way picture as it was taken from the space.",
+        negative_prompt="low quality, ugly, sharpen, from bird view, dark, old",
+        callback=callback,
+    )
+    image.save("./src/generated/output.png")

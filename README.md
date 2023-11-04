@@ -35,3 +35,23 @@ After you will finish with exploration do not forget to stop the container
 
 ---
 
+#### Worker for image generation task:
+
+It is too resource consumable to run SD model directly via REST API server. The operation will take several minutes to consume a massive amount of memory and resources. To solve this, it is better to define another process, apart from server process, that will take care of this image generation task: **so called worker**. Its role to compute task in the background. 
+
+Worker is a process running continuously in the background, waiting for incoming tasks. The tasks are sent by the server. Also we need a communication channel between the server and the worker. This role will take up the **queue**. It will accept and stack messages coming from the server and will make them available to read for the worker.
+
+Schema:
+
+![img](./src/imgs/server-queue-worker.png)
+
+---
+#### The Results of Stable Diffusion model:
+
+Prompt:
+
+`The Milky Way picture as it was taken from the space.`
+
+Output:
+
+![img](./src/generated/output.png)
