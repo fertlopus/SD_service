@@ -38,7 +38,6 @@ class TextToImage:
             >>> image.show()
         """
     pipeline: StableDiffusionPipeline | None = None
-    repo_id: str = "runwayml/stable-diffusion-v1-5"
 
     def load_model(self):
         if torch.cuda.is_available():
@@ -48,11 +47,11 @@ class TextToImage:
         else:
             device = "cpu"
 
-        pipeline = StableDiffusionPipeline.from_pretrained(self.repo_id)
+        pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
         pipeline.to(device)
         self.pipeline = pipeline
 
-    def generate(self, prompt: str, *, negative_prompt: str | None = None, num_steps: int = 500,
+    def generate(self, prompt: str, *, negative_prompt: str | None = None, num_steps: int = 50,
                  callback: Callable[[int, int, torch.FloatTensor], None] | None = None) -> Image.Image:
         if not self.pipeline:
             raise RuntimeError("No pipeline provided or this version is not supported anymore.")
