@@ -64,18 +64,3 @@ class TextToImage:
             height = 800,
             width = 600
         ).images[0]
-
-
-if __name__ == "__main__":
-    text_to_image = TextToImage()
-    text_to_image.load_model()
-
-    def callback(step: int, _timestep, _tensor):
-        print(f" ⚙ ️ Step {step}")
-
-    image = text_to_image.generate(
-        "The Milky Way picture as it was taken from the space.",
-        negative_prompt="low quality, ugly, sharpen, from bird view, dark, old",
-        callback=callback,
-    )
-    image.save("./src/generated/output.png")
